@@ -1,0 +1,23 @@
+enum selectedAction {
+  CREATE_SESSION = 0; // Sends public key
+  RESPONDING_CREATED_SESSION = 1; //Returns public key
+  SHARING_SESSION_KEY = 2; // Shares symmetrical key
+  COMPLETED_SESSION = 3; // Flag sets new mode
+}
+
+/* root container */
+message wpmessage {
+  required string id=1;
+  required string sender=2;
+  required string recipient=3;
+  required wpaction action=4;
+}
+/* second level container and action selector */
+message wpaction {
+  required selectedAction action = 1 [ default = CREATE_SESSION ];
+  optional wpcontextdata contextdata=2;
+}
+
+message wpcontextdata {
+  optional string rawdata=1;
+}

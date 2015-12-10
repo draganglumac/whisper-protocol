@@ -1,0 +1,1 @@
+/usr/bin/cc  -fPIC    -shared -Wl,-soname,libwhisper_protocols.so -o libwhisper_protocols.so CMakeFiles/whisper_protocols.dir/src/obj/wpmessage.pb-c.c.o CMakeFiles/whisper_protocols.dir/src/protocol/wpprotocol.c.o 

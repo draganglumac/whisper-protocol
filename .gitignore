@@ -1,0 +1,7 @@
+*headers
+*.a
+*.so
+*.CMakeFiles
+CMakeCache.txt
+Makefile
+*.pb-c.*
