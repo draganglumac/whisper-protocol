@@ -1,2 +1,0 @@
-/usr/bin/ar cr libwhisper_protocol.a  CMakeFiles/whisper_protocol.dir/src/obj/wpmessage.pb-c.c.o CMakeFiles/whisper_protocol.dir/src/protocol/wpprotocol.c.o
-/usr/bin/ranlib libwhisper_protocol.a

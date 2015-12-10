@@ -1,2 +1,0 @@
-/home/anon/Code/whisper-protocol/CMakeFiles/whisper_protocol.dir
-/home/anon/Code/whisper-protocol/CMakeFiles/whisper_protocols.dir
