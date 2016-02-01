@@ -2,7 +2,7 @@
  *     File Name           :     /home/anon/Code/whisper-protocol/src/protocol/wpprotocol.c
  *     Created By          :     anon
  *     Creation Date       :     [2015-12-10 14:38]
- *     Last Modified       :     [2016-02-01 08:54]
+ *     Last Modified       :     [2016-02-01 08:58]
  *     Description         :      
  **********************************************************************************/
 
@@ -12,7 +12,7 @@
 #include <jnxc_headers/jnxlog.h>
 
 wp_state wpprotocol_generate_message(Wpmessage **message, char *sender, 
-    char *recipient) {
+    char *recipient, Wpaction *action) { 
   if(sender == NULL || recipient == NULL) {
     return E_WP_FAIL;
   }
@@ -34,6 +34,7 @@ wp_state wpprotocol_generate_message(Wpmessage **message, char *sender,
   (*message)->recipient = malloc(len + 1);
   memcpy((*message)->recipient,recipient,len);
 
+  (*message)->action = action;
   free(idstr);
 
   return E_WP_OKAY;

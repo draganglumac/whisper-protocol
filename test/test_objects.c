@@ -2,16 +2,16 @@
  *     File Name           :     test/test_objects.c
  *     Created By          :     anon
  *     Creation Date       :     [2015-12-17 13:15]
- *     Last Modified       :     [2016-02-01 08:54]
+ *     Last Modified       :     [2016-02-01 08:58]
  *     Description         :      
  **********************************************************************************/
 #include "wpprotocol.h"
 #include "wpmessage.pb-c.h"
 #include <jnxc_headers/jnxcheck.h>
 
-Wpmessage* test_message_create() {
+Wpmessage* test_message_create(Wpaction *action) {
   Wpmessage *message;
-  wp_state w = wpprotocol_generate_message(&message,"001","002");
+  wp_state w = wpprotocol_generate_message(&message,"001","002", action);
   JNXCHECK(w == E_WP_OKAY);
 
   JNXCHECK(message->sender); 
@@ -43,8 +43,8 @@ int main(int argc, char **argv) {
   Wpcontextdata *context = test_context_data();
 
   Wpaction *action = test_action_create(context);
-  
-  Wpmessage *message = test_message_create();
+
+  Wpmessage *message = test_message_create(action);
 
 
   return 0;

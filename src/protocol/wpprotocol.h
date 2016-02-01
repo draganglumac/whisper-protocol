@@ -2,7 +2,7 @@
  *     File Name           :     src/protocol/wpprotocol.h
  *     Created By          :     anon
  *     Creation Date       :     [2015-12-10 14:36]
- *     Last Modified       :     [2016-02-01 08:52]
+ *     Last Modified       :     [2016-02-01 08:56]
  *     Description         :      
  **********************************************************************************/
 
@@ -25,7 +25,7 @@ typedef enum data_type {
 
 
 wp_state wpprotocol_generate_message(Wpmessage **message, char *sender, 
-    char *recipient); 
+    char *recipient, Wpaction *action); 
 
 wp_state wpprotocol_generate_contextdata(Wpcontextdata **context, void *data, jnx_size len);
 
