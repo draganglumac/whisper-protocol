@@ -19,5 +19,5 @@ message wpaction {
 }
 
 message wpcontextdata {
-  optional string rawdata=1;
+  optional bytes rawdata=1;
 }

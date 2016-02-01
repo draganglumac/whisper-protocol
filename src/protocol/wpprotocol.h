@@ -2,12 +2,13 @@
  *     File Name           :     src/protocol/wpprotocol.h
  *     Created By          :     anon
  *     Creation Date       :     [2015-12-10 14:36]
- *     Last Modified       :     [2016-01-06 08:21]
+ *     Last Modified       :     [2016-02-01 08:52]
  *     Description         :      
  **********************************************************************************/
 
 #ifndef __WPPROTOCOL_H__
 #define __WPPROTOCOL_H__
+#include <jnxc_headers/jnxtypes.h>
 #include "wpmessage.pb-c.h"
 typedef enum wp_state {
   E_WP_OKAY,
@@ -26,8 +27,10 @@ typedef enum data_type {
 wp_state wpprotocol_generate_message(Wpmessage **message, char *sender, 
     char *recipient); 
 
-wp_state wpprotocol_generate_action(Wpaction **action);
+wp_state wpprotocol_generate_contextdata(Wpcontextdata **context, void *data, jnx_size len);
 
-wp_state wpprotocol_generate_contextdata(Wpcontextdata **context, void *data, data_type type);
+wp_state wpprotocol_generate_action(Wpaction **action,
+    Wpcontextdata *data, SelectedAction saction);
+
 #endif
 
