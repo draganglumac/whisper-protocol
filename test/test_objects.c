@@ -2,50 +2,45 @@
  *     File Name           :     test/test_objects.c
  *     Created By          :     anon
  *     Creation Date       :     [2015-12-17 13:15]
- *     Last Modified       :     [2016-02-01 08:58]
+ *     Last Modified       :     [2016-02-02 13:30]
  *     Description         :      
  **********************************************************************************/
 #include "wpprotocol.h"
 #include "wpmessage.pb-c.h"
 #include <jnxc_headers/jnxcheck.h>
 
-Wpmessage* test_message_create(Wpaction *action) {
-  Wpmessage *message;
-  wp_state w = wpprotocol_generate_message(&message,"001","002", action);
+void test_message_create() {
+  jnx_char *message;
+
+  jnx_size *osize;
+
+  jnx_char *data = malloc(strlen("Hello"));
+  bzero(data,6);
+  memcpy(data,"Hello",6);
+  wp_state w = wpprotocol_generate_message_proto(&message,&osize,"001","002",
+      data,6,SELECTED_ACTION__CREATE_SESSION);
+
   JNXCHECK(w == E_WP_OKAY);
 
-  JNXCHECK(message->sender); 
-  JNXCHECK(message->recipient); 
+  JNXCHECK(message);
 
-  return message;
-}
-Wpaction* test_action_create(Wpcontextdata *contextdata) {
-  Wpaction *action;
-  wp_state w = wpprotocol_generate_action(&action,contextdata,
-      SELECTED_ACTION__CREATE_SESSION);
+  Wpmessage *output = wpmessage__unpack(NULL,osize,message);
 
-  return action;
-}
-Wpcontextdata *test_context_data() {
-  Wpcontextdata *data;
+  Wpaction *a = output->action;
 
-  char *testdata = malloc(strlen("Hello"));
-  bzero(testdata,6);
-  memcpy(testdata,"Hello",6);
+  Wpcontextdata *contextdata = a->contextdata;
 
-  wp_state w = wpprotocol_generate_contextdata(&data,testdata,
-      6);
+  JNXCHECK(contextdata->has_rawdata);
+  if(contextdata->has_rawdata) {
+    printf("lenth of value: %d\n", contextdata->rawdata.len);
+    printf("content: %s\n", contextdata->rawdata.data);
+  }
 
-  return data;
+  wpmessage__free_unpacked(output,NULL);
 }
 int main(int argc, char **argv) {
 
-  Wpcontextdata *context = test_context_data();
-
-  Wpaction *action = test_action_create(context);
-
-  Wpmessage *message = test_message_create(action);
-
+  test_message_create();
 
   return 0;
 }

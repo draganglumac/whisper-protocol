@@ -2,7 +2,7 @@
  *     File Name           :     /home/anon/Code/whisper-protocol/src/protocol/wpprotocol.c
  *     Created By          :     anon
  *     Creation Date       :     [2015-12-10 14:38]
- *     Last Modified       :     [2016-02-01 08:58]
+ *     Last Modified       :     [2016-02-02 13:11]
  *     Description         :      
  **********************************************************************************/
 
@@ -11,54 +11,55 @@
 #include <jnxc_headers/jnxguid.h>
 #include <jnxc_headers/jnxlog.h>
 
-wp_state wpprotocol_generate_message(Wpmessage **message, char *sender, 
-    char *recipient, Wpaction *action) { 
+wp_state wpprotocol_generate_message_proto(jnx_char **obuffer, jnx_size *osize,
+    char *sender,char *recipient,
+    void *data, jnx_size len, SelectedAction action) {
   if(sender == NULL || recipient == NULL) {
     return E_WP_FAIL;
   }
+  //Context data
+  Wpcontextdata d = WPCONTEXTDATA__INIT;
+  if(data) {
+    d.has_rawdata = 1;
+    d.rawdata.data = malloc(sizeof(len));
+    memcpy(d.rawdata.data,data,len);
+    d.rawdata.len = len;
+  }else {
+    d.has_rawdata = 0;
+  }
+  //Action
+  Wpaction a = WPACTION__INIT;
+  a.contextdata = &d;
+  a.action = action;
+  //Message
   Wpmessage m = WPMESSAGE__INIT;
-  *message = &m;
+  m.action = &a;
   jnx_guid g;
   jnx_guid_create(&g);
   char *idstr;
   jnx_guid_to_string(&g, &idstr);
-  int len = strlen(idstr);
-  (*message)->id = malloc(len + 1);
-  memcpy((*message)->id,idstr,len);
-
-  len = strlen(sender);
-  (*message)->sender = malloc(len + 1);
-  memcpy((*message)->sender,sender,len);
-
+  int l = strlen(idstr);
+  m.id = malloc(l + 1);
+  memcpy(m.id,idstr,l);
+  //sender 
+  l = strlen(sender);
+  m.sender = malloc(l + 1);
+  memcpy(m.sender,sender,l);
+  //recipient
   len = strlen(recipient);
-  (*message)->recipient = malloc(len + 1);
-  memcpy((*message)->recipient,recipient,len);
+  m.recipient = malloc(l + 1);
+  memcpy(m.recipient,recipient,l);
 
-  (*message)->action = action;
   free(idstr);
 
-  return E_WP_OKAY;
-} 
-wp_state wpprotocol_generate_action(Wpaction **action,
-    Wpcontextdata *data, SelectedAction saction) {
-  Wpaction a = WPACTION__INIT;
+  jnx_size s = wpmessage__get_packed_size(&m);
 
-
-  *action = &a;
-  (*action)->action = saction; //TODO: might need to alloc this
-  (*action)->contextdata = data;
-  return E_WP_OKAY;
-}
-wp_state wpprotocol_generate_contextdata(Wpcontextdata **context, void *data,jnx_size len) {
-  Wpcontextdata c = WPCONTEXTDATA__INIT;
-  *context = &c;
-  
-  if(data) {
-    (*context)->has_rawdata = 1;
-    (*context)->rawdata.data = malloc(sizeof(len));
-    memcpy((*context)->rawdata.data,data,len);
-    (*context)->rawdata.len = len;
+  *obuffer = malloc(s);
+  jnx_size ps = wpmessage__pack(&m,*obuffer);
+  if(!*obuffer) {
+    return E_WP_FAIL;
   }
+  *osize = ps;
 
   return E_WP_OKAY;
 }
