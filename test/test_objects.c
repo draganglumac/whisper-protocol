@@ -2,7 +2,7 @@
  *     File Name           :     test/test_objects.c
  *     Created By          :     anon
  *     Creation Date       :     [2015-12-17 13:15]
- *     Last Modified       :     [2016-02-02 13:30]
+ *     Last Modified       :     [2016-02-02 13:32]
  *     Description         :      
  **********************************************************************************/
 #include "wpprotocol.h"
@@ -36,6 +36,7 @@ void test_message_create() {
     printf("content: %s\n", contextdata->rawdata.data);
   }
 
+  JNXCHECK(strcmp(contextdata->rawdata.data,"Hello") == 0);
   wpmessage__free_unpacked(output,NULL);
 }
 int main(int argc, char **argv) {
