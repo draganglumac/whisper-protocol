@@ -2,12 +2,12 @@
  *     File Name           :     test/test_objects.c
  *     Created By          :     anon
  *     Creation Date       :     [2015-12-17 13:15]
- *     Last Modified       :     [2016-06-01 17:46]
+ *     Last Modified       :     [2016-06-01 21:03]
  *     Description         :      
  **********************************************************************************/
 #include "wpprotocol.h"
 #include "wpmessage.pb-c.h"
-#include <jnxc_headers/jnxcheck.h>
+#include <jnxc_headers/jnx_check.h>
 
 void test_message_create() {
   jnx_char *message;
