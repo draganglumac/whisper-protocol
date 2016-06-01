@@ -1,4 +1,4 @@
-# Install script for directory: /home/anon/Code/whisper-protocol/src/protocol
+# Install script for directory: /home/jonesax/Work/whisper-protocol/src/protocol
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)

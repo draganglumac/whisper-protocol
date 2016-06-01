@@ -2,7 +2,7 @@
  *     File Name           :     /home/anon/Code/whisper-protocol/src/protocol/wpprotocol.c
  *     Created By          :     anon
  *     Creation Date       :     [2015-12-10 14:38]
- *     Last Modified       :     [2016-02-02 13:11]
+ *     Last Modified       :     [2016-06-01 12:04]
  *     Description         :      
  **********************************************************************************/
 
@@ -14,6 +14,8 @@
 wp_state wpprotocol_generate_message_proto(jnx_char **obuffer, jnx_size *osize,
     char *sender,char *recipient,
     void *data, jnx_size len, SelectedAction action) {
+  JNXCHECK(sender);
+  JNXCHECK(recipient);
   if(sender == NULL || recipient == NULL) {
     return E_WP_FAIL;
   }

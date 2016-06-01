@@ -2,7 +2,7 @@
  *     File Name           :     test/test_objects.c
  *     Created By          :     anon
  *     Creation Date       :     [2015-12-17 13:15]
- *     Last Modified       :     [2016-02-02 13:32]
+ *     Last Modified       :     [2016-06-01 12:05]
  *     Description         :      
  **********************************************************************************/
 #include "wpprotocol.h"
@@ -20,6 +20,7 @@ void test_message_create() {
   wp_state w = wpprotocol_generate_message_proto(&message,&osize,"001","002",
       data,6,SELECTED_ACTION__CREATE_SESSION);
 
+  free(data);
   JNXCHECK(w == E_WP_OKAY);
 
   JNXCHECK(message);
