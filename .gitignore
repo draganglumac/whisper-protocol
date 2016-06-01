@@ -1,4 +1,5 @@
 cmake_install.cmake
+test_objects
 CMakeFiles
 CMakeCache
 *headers
