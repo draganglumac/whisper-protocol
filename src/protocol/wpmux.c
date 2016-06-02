@@ -2,7 +2,7 @@
 *     File Name           :     /home/jonesax/Work/whisper-protocol/src/protocol/wpmux.c
 *     Created By          :     jonesax
 *     Creation Date       :     [2016-06-01 17:45]
-*     Last Modified       :     [2016-06-01 21:36]
+*     Last Modified       :     [2016-06-02 10:05]
 *     Description         :      
 **********************************************************************************/
 
@@ -20,11 +20,23 @@ wp_mux *wpprotocol_mux_create() {
 }
 void wp_protocol_mux_message_processor(const jnx_uint8 *payload,
     jnx_size bytes_read, void *args) {
-
+  jnx_size osize;
+  wp_mux *mux = (wp_mux*)args;
+  Wpmessage *msg = wpmessage__unpack(NULL,osize,payload);
+  if(msg) {
+    jnx_stack_push(mux->out_queue,msg);
+  }
 }
-void wpprotocol_mux_tick(wp_mux *mux,void *args) {
+void wpprotocol_mux_tick(wp_mux *mux) {
+  
   jnx_socket_udp_listener_tick(mux->listener,wp_protocol_mux_message_processor,
-      args);
+      mux);
+
+  if(!jnx_stack_is_empty(mux->in_queue)) {
+    Wpmessage *msg = jnx_stack_pop(mux->in_queue);
+    //emit one message
+    
+  } 
 }
 void wpprotocol_mux_destroy(wp_mux **mux) {
   JNXCHECK(*mux);

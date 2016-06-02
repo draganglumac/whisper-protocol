@@ -2,7 +2,7 @@
 *     File Name           :     src/protocol/wpmux.h
 *     Created By          :     jonesax
 *     Creation Date       :     [2016-06-01 17:40]
-*     Last Modified       :     [2016-06-01 21:30]
+*     Last Modified       :     [2016-06-01 23:11]
 *     Description         :      
 **********************************************************************************/
 #ifndef __WPMUX_H__
@@ -28,7 +28,7 @@ typedef struct wp_mux {
 
 wp_mux *wpprotocol_mux_create();
 
-void wpprotocol_mux_tick(wp_mux *mux,void *args);
+void wpprotocol_mux_tick(wp_mux *mux);
 
 wp_mux_state wpprotocol_mux_push(wp_mux *mux,Wpmessage *inmsg);
 

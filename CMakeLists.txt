@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 2.8)
 set(INSTALL_PREFIX /usr)
 project(whisper-protocol)
-
+set(CMAKE_C_FLAGS "-std=c99")
 execute_process(COMMAND git submodule init)
 execute_process(COMMAND git submodule update)
 execute_process(COMMAND cmake . WORKING_DIRECTORY jnxlibc)
