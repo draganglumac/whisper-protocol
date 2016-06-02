@@ -2,7 +2,7 @@
 *     File Name           :     /home/jonesax/Work/whisper-protocol/src/protocol/wpmux.c
 *     Created By          :     jonesax
 *     Creation Date       :     [2016-06-01 17:45]
-*     Last Modified       :     [2016-06-02 14:34]
+*     Last Modified       :     [2016-06-02 21:34]
 *     Description         :      
 **********************************************************************************/
 
@@ -24,11 +24,13 @@ wp_mux *wpprotocol_mux_create(jnx_char *port, jnx_uint8 family,
 }
 void wp_protocol_mux_message_processor(const jnx_uint8 *payload,
     jnx_size bytes_read, int connected_socket, void *args) {
-  jnx_size osize;
   wp_mux *mux = (wp_mux*)args;
-  Wpmessage *msg = wpmessage__unpack(NULL,osize,payload);
+  JNXLOG(LDEBUG,"Attempting to unpack incoming message...");
+  Wpmessage *msg = wpmessage__unpack(NULL,bytes_read,payload);
   if(msg) {
     jnx_stack_push(mux->out_queue,msg);
+  }else {
+  JNXLOG(LDEBUG,"Malformed input message, discarding...");
   }
 }
 void wpprotocol_mux_tick(wp_mux *mux) {
