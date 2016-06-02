@@ -2,7 +2,7 @@
  *     File Name           :     test/test_objects.c
  *     Created By          :     anon
  *     Creation Date       :     [2015-12-17 13:15]
- *     Last Modified       :     [2016-06-02 21:40]
+ *     Last Modified       :     [2016-06-02 21:46]
  *     Description         :      
  **********************************************************************************/
 #include "wpprotocol.h"
@@ -124,9 +124,7 @@ void test_typical_use() {
   JNXCHECK(outmessage);
  
   Wpmessage *output = outmessage;
-  
   Wpaction *a = output->action;
-
   Wpcontextdata *contextdata = a->contextdata;
 
   JNXCHECK(contextdata->has_rawdata);
@@ -139,7 +137,7 @@ void test_typical_use() {
   
   JNXCHECK(output);  
   wpprotocol_mux_destroy(&m);
-
+  wpmessage__free_unpacked(outmessage,NULL);
 }
 int main(int argc, char **argv) {
 
