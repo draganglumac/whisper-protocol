@@ -2,7 +2,7 @@
  *     File Name           :     src/protocol/wpprotocol.h
  *     Created By          :     anon
  *     Creation Date       :     [2015-12-10 14:36]
- *     Last Modified       :     [2016-06-01 20:54]
+ *     Last Modified       :     [2016-06-02 10:32]
  *     Description         :      
  **********************************************************************************/
 
@@ -13,11 +13,11 @@ extern "C" {
 #endif
 #include <jnxc_headers/jnx_types.h>
 #include "wpmessage.pb-c.h"
-typedef enum wp_message_state {
-  E_WMS_OKAY,
-  E_WMS_FAIL,
-  E_WMS_UNKNOWN
-}wp_message_state;
+typedef enum wp_generation_state {
+  E_WGS_OKAY,
+  E_WGS_FAIL,
+  E_WGS_UNKNOWN
+}wp_generation_state;
 
 typedef enum data_type {
   E_DT_ASYMKEY,
@@ -27,7 +27,7 @@ typedef enum data_type {
 }data_type;
 
 
-wp_message_state wpprotocol_generate_message_proto(jnx_char **obuffer, jnx_size *osize,
+wp_generation_state wpprotocol_generate_message_proto(jnx_char **obuffer, jnx_size *osize,
     char *sender,char *recipient,
     void *data, jnx_size len, SelectedAction action);
 

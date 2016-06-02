@@ -2,24 +2,28 @@
 *     File Name           :     /home/jonesax/Work/whisper-protocol/src/protocol/wpmux.c
 *     Created By          :     jonesax
 *     Creation Date       :     [2016-06-01 17:45]
-*     Last Modified       :     [2016-06-02 10:05]
+*     Last Modified       :     [2016-06-02 14:34]
 *     Description         :      
 **********************************************************************************/
 
 #include "wpmux.h"
 #include <jnxc_headers/jnx_check.h>
+#include <jnxc_headers/jnx_log.h>
 #include <stdlib.h>
 
-wp_mux *wpprotocol_mux_create() {
+wp_mux *wpprotocol_mux_create(jnx_char *port, jnx_uint8 family,
+    wpprotocol_emit_message_hook hook) {
   wp_mux *mux = malloc(sizeof(wp_mux));
-  mux->listener = jnx_socket_udp_listener_create("9090",AF_INET);
+  mux->listener = jnx_socket_tcp_listener_create(port,family,100);
   mux->out_queue = jnx_stack_create();
   mux->in_queue = jnx_stack_create();
+  mux->emit_hook = hook;
   JNXCHECK(mux);
+  JNXCHECK(hook);
   return mux;
 }
 void wp_protocol_mux_message_processor(const jnx_uint8 *payload,
-    jnx_size bytes_read, void *args) {
+    jnx_size bytes_read, int connected_socket, void *args) {
   jnx_size osize;
   wp_mux *mux = (wp_mux*)args;
   Wpmessage *msg = wpmessage__unpack(NULL,osize,payload);
@@ -28,19 +32,20 @@ void wp_protocol_mux_message_processor(const jnx_uint8 *payload,
   }
 }
 void wpprotocol_mux_tick(wp_mux *mux) {
-  
-  jnx_socket_udp_listener_tick(mux->listener,wp_protocol_mux_message_processor,
+  jnx_socket_tcp_listener_tick(mux->listener,wp_protocol_mux_message_processor,
       mux);
-
   if(!jnx_stack_is_empty(mux->in_queue)) {
     Wpmessage *msg = jnx_stack_pop(mux->in_queue);
     //emit one message
-    
+    if(mux->emit_hook) {
+      mux->emit_hook(msg);
+    }    
   } 
+  JNXLOG(LDEBUG,"Tick"); 
 }
 void wpprotocol_mux_destroy(wp_mux **mux) {
   JNXCHECK(*mux);
-  jnx_socket_udp_listener_destroy(&(*mux)->listener);
+  jnx_socket_tcp_listener_destroy(&(*mux)->listener);
 
   for(int x=0;x<(*mux)->out_queue->count; ++x) {
  

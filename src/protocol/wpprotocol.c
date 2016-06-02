@@ -2,7 +2,7 @@
  *     File Name           :     /home/anon/Code/whisper-protocol/src/protocol/wpprotocol.c
  *     Created By          :     anon
  *     Creation Date       :     [2015-12-10 14:38]
- *     Last Modified       :     [2016-06-01 20:54]
+ *     Last Modified       :     [2016-06-02 10:32]
  *     Description         :      
  **********************************************************************************/
 
@@ -11,13 +11,13 @@
 #include <jnxc_headers/jnx_guid.h>
 #include <jnxc_headers/jnx_log.h>
 
-wp_message_state wpprotocol_generate_message_proto(jnx_char **obuffer, jnx_size *osize,
+wp_generation_state wpprotocol_generate_message_proto(jnx_char **obuffer, jnx_size *osize,
     char *sender,char *recipient,
     void *data, jnx_size len, SelectedAction action) {
   JNXCHECK(sender);
   JNXCHECK(recipient);
   if(sender == NULL || recipient == NULL) {
-    return E_WMS_FAIL;
+    return E_WGS_FAIL;
   }
   //Context data
   Wpcontextdata d = WPCONTEXTDATA__INIT;
@@ -59,9 +59,9 @@ wp_message_state wpprotocol_generate_message_proto(jnx_char **obuffer, jnx_size 
   *obuffer = malloc(s);
   jnx_size ps = wpmessage__pack(&m,*obuffer);
   if(!*obuffer) {
-    return E_WMS_FAIL;
+    return E_WGS_FAIL;
   }
   *osize = ps;
 
-  return E_WMS_OKAY;
+  return E_WGS_OKAY;
 }
