@@ -2,13 +2,14 @@
 *     File Name           :     src/protocol/wpmux.h
 *     Created By          :     jonesax
 *     Creation Date       :     [2016-06-01 17:40]
-*     Last Modified       :     [2016-06-02 14:33]
+*     Last Modified       :     [2016-06-03 09:38]
 *     Description         :      
 **********************************************************************************/
 #ifndef __WPMUX_H__
 #define __WPMUX_H__
 #include <jnxc_headers/jnx_tcp_socket.h>
 #include <jnxc_headers/jnx_stack.h>
+#include "wpprotocol.h"
 #include "wpmessage.pb-c.h"
 #ifdef __cplusplus
 extern "C" {
@@ -37,8 +38,9 @@ wp_mux *wpprotocol_mux_create(jnx_char *port, jnx_uint8 family,
 
 void wpprotocol_mux_tick(wp_mux *mux);
 
+//Once pushed user can free their message memory as a copy is made
 wp_mux_state wpprotocol_mux_push(wp_mux *mux,Wpmessage *inmsg);
-
+//When a message is popped the user will be responsibie for memory
 wp_mux_state wpprotocol_mux_pop(wp_mux *mux, Wpmessage **omsg);
 
 void wpprotocol_mux_destroy(wp_mux **mux);

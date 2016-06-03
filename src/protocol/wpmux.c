@@ -2,7 +2,7 @@
 *     File Name           :     /home/jonesax/Work/whisper-protocol/src/protocol/wpmux.c
 *     Created By          :     jonesax
 *     Creation Date       :     [2016-06-01 17:45]
-*     Last Modified       :     [2016-06-02 21:34]
+*     Last Modified       :     [2016-06-03 09:33]
 *     Description         :      
 **********************************************************************************/
 
@@ -64,7 +64,13 @@ wp_mux_state wpprotocol_mux_push(wp_mux *mux,Wpmessage *inmsg) {
   if(inmsg == NULL) {
     return E_WMS_FAIL;
   }
-  jnx_stack_push(mux->in_queue, inmsg); 
+  
+  Wpmessage *deepcopy;
+  wpprotocol_deep_copy_message(inmsg,&deepcopy);
+  if(!deepcopy) {
+    return E_WMS_FAIL;
+  }
+  jnx_stack_push(mux->in_queue, deepcopy); 
   return E_WMS_OKAY;
 }
 wp_mux_state wpprotocol_mux_pop(wp_mux *mux, Wpmessage **omsg) {

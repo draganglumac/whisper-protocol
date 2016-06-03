@@ -2,7 +2,7 @@
  *     File Name           :     /home/anon/Code/whisper-protocol/src/protocol/wpprotocol.c
  *     Created By          :     anon
  *     Creation Date       :     [2015-12-10 14:38]
- *     Last Modified       :     [2016-06-02 10:32]
+ *     Last Modified       :     [2016-06-03 09:36]
  *     Description         :      
  **********************************************************************************/
 
@@ -62,6 +62,47 @@ wp_generation_state wpprotocol_generate_message_proto(jnx_char **obuffer, jnx_si
     return E_WGS_FAIL;
   }
   *osize = ps;
+
+  return E_WGS_OKAY;
+}
+
+wp_generation_state wpprotocol_deep_copy_message(Wpmessage *inmsg, Wpmessage **outmsg) {
+  if(!inmsg) {
+    return E_WGS_FAIL;
+  }
+  Wpaction *inact = inmsg->action;
+  Wpcontextdata *indata = inact->contextdata;
+  //Context
+  Wpcontextdata d = WPCONTEXTDATA__INIT;
+  if(indata->has_rawdata) {
+    d.has_rawdata = 1;
+    d.rawdata.data = malloc(sizeof(indata->rawdata.len));
+    memcpy(d.rawdata.data,indata->rawdata.data,indata->rawdata.len);
+    d.rawdata.len = indata->rawdata.len;
+  }else {
+    d.has_rawdata = 0;
+  }
+  //Action 
+  Wpaction a = WPACTION__INIT;
+  a.contextdata = &d;
+  a.action = inmsg->action->action;
+  //Messgae
+  Wpmessage m = WPMESSAGE__INIT;
+  m.action = &a;
+  jnx_guid g;
+  m.id = malloc(strlen(inmsg->id) + 1);
+  bzero(m.id,strlen(inmsg->id)  +1);
+  memcpy(m.id,inmsg->id,strlen(inmsg->id));
+  //sender 
+  int l = strlen(inmsg->sender);
+  m.sender = malloc(l + 1);
+  memcpy(m.sender,inmsg->sender,l);
+  //recipient
+  l = strlen(inmsg->recipient);
+  m.recipient = malloc(l + 1);
+  memcpy(m.recipient,inmsg->recipient,l);
+
+  *outmsg = &m;
 
   return E_WGS_OKAY;
 }

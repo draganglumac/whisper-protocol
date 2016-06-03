@@ -2,7 +2,7 @@
  *     File Name           :     test/test_objects.c
  *     Created By          :     anon
  *     Creation Date       :     [2015-12-17 13:15]
- *     Last Modified       :     [2016-06-02 21:46]
+ *     Last Modified       :     [2016-06-03 09:37]
  *     Description         :      
  **********************************************************************************/
 #include "wpprotocol.h"
@@ -92,11 +92,12 @@ void test_inqueue() {
   
   Wpmessage *d = generate_message();
   wpprotocol_mux_push(m,d);
-  JNXLOG(LDEBUG,"Ticking..."); 
+  wpmessage__free_unpacked(d,NULL);
+  JNXLOG(LDEBUG,"deleted reference to local message pointer");
+  JNXLOG(LDEBUG,"Ticking...");
   wpprotocol_mux_tick(m); 
   
   JNXCHECK(has_emitted == 1); 
-  wpmessage__free_unpacked(d,NULL);
   wpprotocol_mux_destroy(&m);
 
 }
@@ -140,11 +141,15 @@ void test_typical_use() {
   wpmessage__free_unpacked(outmessage,NULL);
 }
 int main(int argc, char **argv) {
-
+  JNXLOG(LDEBUG,"text_mux_create");
   test_mux_create();
+  JNXLOG(LDEBUG,"test_mux_tick");
   test_mux_tick();
+  JNXLOG(LDEBUG,"test_mux_outqueue");
   test_mux_outqueue();
+  JNXLOG(LDEBUG,"test_inqueue");
   test_inqueue();
+  JNXLOG(LDEBUG,"test_typical_use");
   test_typical_use();
   return 0;
 }

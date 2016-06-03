@@ -2,7 +2,7 @@
  *     File Name           :     src/protocol/wpprotocol.h
  *     Created By          :     anon
  *     Creation Date       :     [2015-12-10 14:36]
- *     Last Modified       :     [2016-06-02 10:32]
+ *     Last Modified       :     [2016-06-03 09:36]
  *     Description         :      
  **********************************************************************************/
 
@@ -31,6 +31,8 @@ wp_generation_state wpprotocol_generate_message_proto(jnx_char **obuffer, jnx_si
     char *sender,char *recipient,
     void *data, jnx_size len, SelectedAction action);
 
+
+wp_generation_state wpprotocol_deep_copy_message(Wpmessage *inmsg, Wpmessage **outmsg);
 #ifdef __cplusplus
 }
 #endif
