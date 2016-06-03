@@ -1,0 +1,5 @@
+/usr/lib/libwhisper_protocol.a
+/usr/lib/libwhisper_protocols.so
+/usr/include/whisper_protocol_headers/wpmux.h
+/usr/include/whisper_protocol_headers/wpprotocol.h
+/usr/include/whisper_protocol_headers/wpmessage.pb-c.h

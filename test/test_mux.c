@@ -2,7 +2,7 @@
  *     File Name           :     test/test_objects.c
  *     Created By          :     anon
  *     Creation Date       :     [2015-12-17 13:15]
- *     Last Modified       :     [2016-06-03 09:37]
+ *     Last Modified       :     [2016-06-03 12:19]
  *     Description         :      
  **********************************************************************************/
 #include "wpprotocol.h"
@@ -23,7 +23,7 @@ jnx_char *generate_message_str() {
       data,6,SELECTED_ACTION__CREATE_SESSION);
 
   JNXLOG(LDEBUG,"generated message str %zu bytes", msg_size)
-  free(data);
+    free(data);
   return message;
 }
 Wpmessage *generate_message() {
@@ -56,7 +56,7 @@ void test_mux_cb(Wpmessage *message) {
   has_emitted = 1;
 }
 void test_mux_create() {
-  
+
   wp_mux *m = wpprotocol_mux_create(TESTPORT,AF_INET,test_mux_cb);
   JNXCHECK(m);
   wpprotocol_mux_destroy(&m);
@@ -89,14 +89,14 @@ void test_mux_outqueue() {
 void test_inqueue() {
   wp_mux *m = wpprotocol_mux_create(TESTPORT,AF_INET,test_mux_cb);
   JNXCHECK(m);
-  
+
   Wpmessage *d = generate_message();
   wpprotocol_mux_push(m,d);
   wpmessage__free_unpacked(d,NULL);
   JNXLOG(LDEBUG,"deleted reference to local message pointer");
   JNXLOG(LDEBUG,"Ticking...");
   wpprotocol_mux_tick(m); 
-  
+
   JNXCHECK(has_emitted == 1); 
   wpprotocol_mux_destroy(&m);
 
@@ -112,19 +112,20 @@ void worker(void *args) {
   free(msg);
 }
 void test_typical_use() {
-  
+
   has_emitted = 0;
   wp_mux *m = wpprotocol_mux_create(TESTPORT,AF_INET,test_mux_cb);
-  
+
   worker(m);
   wpprotocol_mux_tick(m); 
   wpprotocol_mux_tick(m); 
 
   Wpmessage *outmessage;
-  wpprotocol_mux_pop(m,&outmessage);
-  JNXCHECK(outmessage);
- 
+  wp_mux_state state = wpprotocol_mux_pop(m,&outmessage);
+  JNXCHECK(state == E_WMS_OKAY);
   Wpmessage *output = outmessage;
+  JNXCHECK(output);
+  JNXCHECK(output->action);
   Wpaction *a = output->action;
   Wpcontextdata *contextdata = a->contextdata;
 
@@ -135,7 +136,7 @@ void test_typical_use() {
   }
 
   JNXCHECK(strcmp(contextdata->rawdata.data,"Hello") == 0);
-  
+
   JNXCHECK(output);  
   wpprotocol_mux_destroy(&m);
   wpmessage__free_unpacked(outmessage,NULL);
