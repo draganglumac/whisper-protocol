@@ -15,10 +15,19 @@ wp_mux *m = NULL;
 
 void some_callback_for_user_on_message(Wpmessage *message) {
 
-  //maybe send a reply?
-  if(m) {
-    Wpmessage *d = generate_message();
-    wpprotocol_mux_push(m,d);
+  Wpaction *a = message->action;
+  Wpcontextdata *contextdata = a->contextdata;
+
+  if(contextdata->has_rawdata) {
+    printf("lenth of value: %d\n", contextdata->rawdata.len);
+    printf("content: %s\n", contextdata->rawdata.data);
+
+    //maybe send a reply?
+    if(m) {
+      Wpmessage *d = generate_message();
+      //Schedules message to be sent on next network tick
+      wpprotocol_mux_push(m,d);
+    }
   }
 }
 
@@ -27,7 +36,8 @@ void example() {
   m = wpprotocol_mux_create(TESTPORT,AF_INET,some_callback_for_user_on_message);
 
   while(;;) { 
-    wpprotocol_mux_tick(m); 
+    wpprotocol_mux_tick(m);
+    sleep(500);
   }
 
   wpprotocol_mux_destroy(&m);
