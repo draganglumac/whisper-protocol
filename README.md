@@ -1,49 +1,36 @@
 # whisper-protocol
 
 A self contained google protobuf protocol for whisper-core.
+Uses the principle of a mux to control push/pull from queues.
 
-Example below
+- Main benefits are that controlling the network via multiplexing we can run it on a single thread
+- Queues abstract the network layer from the user
+- No awkward awaiting either end of the TCP channel
+
+Example of messaging below:
 
 ```C
-#include "wpprotocol.h"
-#include "wpmessage.pb-c.h"
-#include <jnxc_headers/jnxcheck.h>
+wp_mux *m = NULL;
 
-void test_message_create() {
-  jnx_char *message;
 
-  jnx_size *osize;
+void some_callback_for_user_on_message(Wpmessage *message) {
 
-  jnx_char *data = malloc(strlen("Hello"));
-  bzero(data,6);
-  memcpy(data,"Hello",6);
-  wp_state w = wpprotocol_generate_message_proto(&message,&osize,"001","002",
-      data,6,SELECTED_ACTION__CREATE_SESSION);
+  //maybe send a reply?
+  if(m) {
+    Wpmessage *d = generate_message();
+    wpprotocol_mux_push(m,d);
+  }
+}
 
-  free(data);
-  JNXCHECK(w == E_WP_OKAY);
 
-  JNXCHECK(message);
+void example() {
+  m = wpprotocol_mux_create(TESTPORT,AF_INET,some_callback_for_user_on_message);
 
-  Wpmessage *output = wpmessage__unpack(NULL,osize,message);
-
-  Wpaction *a = output->action;
-
-  Wpcontextdata *contextdata = a->contextdata;
-
-  JNXCHECK(contextdata->has_rawdata);
-  if(contextdata->has_rawdata) {
-    printf("lenth of value: %d\n", contextdata->rawdata.len);
-    printf("content: %s\n", contextdata->rawdata.data);
+  while(;;) { 
+    wpprotocol_mux_tick(m); 
   }
 
-  JNXCHECK(strcmp(contextdata->rawdata.data,"Hello") == 0);
-  wpmessage__free_unpacked(output,NULL);
-}
-int main(int argc, char **argv) {
+  wpprotocol_mux_destroy(&m);
+} 
 
-  test_message_create();
-
-  return 0;
-}
 ```
