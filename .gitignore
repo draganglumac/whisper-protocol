@@ -1,3 +1,4 @@
+*.txt
 cmake_install.cmake
 test_mux
 test_objects
