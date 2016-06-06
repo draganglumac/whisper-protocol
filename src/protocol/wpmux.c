@@ -1,10 +1,10 @@
 /*********************************************************************************
-*     File Name           :     /home/jonesax/Work/whisper-protocol/src/protocol/wpmux.c
-*     Created By          :     jonesax
-*     Creation Date       :     [2016-06-01 17:45]
-*     Last Modified       :     [2016-06-03 11:37]
-*     Description         :      
-**********************************************************************************/
+ *     File Name           :     /home/jonesax/Work/whisper-protocol/src/protocol/wpmux.c
+ *     Created By          :     jonesax
+ *     Creation Date       :     [2016-06-01 17:45]
+ *     Last Modified       :     [2016-06-06 16:43]
+ *     Description         :      
+ **********************************************************************************/
 
 #include "wpmux.h"
 #include <jnxc_headers/jnx_check.h>
@@ -29,10 +29,9 @@ void wp_protocol_mux_message_processor(const jnx_uint8 *payload,
   JNXLOG(LDEBUG,"Attempting to unpack incoming message...");
   Wpmessage *msg = wpmessage__unpack(NULL,bytes_read,payload);
   if(msg) {
-    JNXLOG(LDEBUG,"Adding message to outqueue...");
     jnx_stack_push(mux->out_queue,msg);
   }else {
-  JNXLOG(LDEBUG,"Malformed input message, discarding...");
+    JNXLOG(LDEBUG,"Malformed input message, discarding...");
   }
 }
 void wpprotocol_mux_tick(wp_mux *mux) {
@@ -43,7 +42,9 @@ void wpprotocol_mux_tick(wp_mux *mux) {
     //emit one message
     if(mux->emit_hook) {
       mux->emit_hook(msg);
-    }    
+    }else {
+      JNXLOG(LERROR,"Unable to emit!");
+    } 
   } 
   JNXLOG(LDEBUG,"Tick"); 
 }
@@ -54,7 +55,7 @@ void wpprotocol_mux_destroy(wp_mux **mux) {
   Wpmessage *o;
   while(!(E_WMS_OKAY_EMPTY == wpprotocol_mux_pop(*mux,&o))) {
     if(o == NULL) {
-    break;
+      break;
     }
     wpmessage__free_unpacked(o,NULL);
   }
@@ -73,17 +74,19 @@ wp_mux_state wpprotocol_mux_push(wp_mux *mux,Wpmessage *inmsg) {
   if(inmsg == NULL) {
     return E_WMS_FAIL;
   }
-  
-  Wpmessage *deepcopy;
+
+  Wpmessage *deepcopy = NULL;
   wpprotocol_deep_copy_message(inmsg,&deepcopy);
   if(!deepcopy) {
+    JNXLOG(LERROR,"Copy message failed!");
     return E_WMS_FAIL;
   }
+
   jnx_stack_push(mux->in_queue, deepcopy); 
   return E_WMS_OKAY;
 }
 wp_mux_state wpprotocol_mux_pop(wp_mux *mux, Wpmessage **omsg) {
-  
+
   if(!jnx_stack_is_empty(mux->out_queue)) {
     Wpmessage *msg = jnx_stack_pop(mux->out_queue);
     if(!msg) {

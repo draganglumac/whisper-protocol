@@ -2,7 +2,7 @@
  *     File Name           :     test/test_objects.c
  *     Created By          :     anon
  *     Creation Date       :     [2015-12-17 13:15]
- *     Last Modified       :     [2016-06-03 12:19]
+ *     Last Modified       :     [2016-06-06 16:52]
  *     Description         :      
  **********************************************************************************/
 #include "wpprotocol.h"
@@ -15,31 +15,30 @@
 
 static jnx_size *msg_size;
 jnx_char *generate_message_str() {
-  jnx_char *message;
+  Wpmessage *message;
   jnx_char *data = malloc(strlen("Hello"));
   bzero(data,6);
   memcpy(data,"Hello",6);
-  wp_generation_state w = wpprotocol_generate_message_proto(&message,&msg_size,"001","002",
+  wp_generation_state w = wpprotocol_generate_message(&message,"001","002",
       data,6,SELECTED_ACTION__CREATE_SESSION);
 
-  JNXLOG(LDEBUG,"generated message str %zu bytes", msg_size)
-    free(data);
-  return message;
+  JNXCHECK(w == E_WGS_OKAY);
+  free(data);
+  jnx_size s = wpmessage__get_packed_size(message);
+  jnx_char *obuffer = malloc(s);
+  msg_size = wpmessage__pack(message,obuffer);
+  return obuffer;
 }
 Wpmessage *generate_message() {
-  jnx_char *message;
+  Wpmessage *message= NULL;
   jnx_size *osize;
   jnx_char *data = malloc(strlen("Hello"));
   bzero(data,6);
   memcpy(data,"Hello",6);
-  wp_generation_state w = wpprotocol_generate_message_proto(&message,&osize,"001","002",
+  wp_generation_state w = wpprotocol_generate_message(&message,"001","002",
       data,6,SELECTED_ACTION__CREATE_SESSION);
 
-  free(data);
-  JNXCHECK(w == E_WGS_OKAY);
-  JNXCHECK(message);
-  Wpmessage *output = wpmessage__unpack(NULL,osize,message);
-  Wpaction *a = output->action;
+  Wpaction *a = message->action;
   Wpcontextdata *contextdata = a->contextdata;
 
   JNXCHECK(contextdata->has_rawdata);
@@ -47,8 +46,9 @@ Wpmessage *generate_message() {
     printf("lenth of value: %d\n", contextdata->rawdata.len);
     printf("content: %s\n", contextdata->rawdata.data);
   }
-
-  return output;
+  JNXCHECK(w == E_WGS_OKAY);
+  JNXCHECK(message);
+  return message;
 }
 static int has_emitted = 0;
 void test_mux_cb(Wpmessage *message) {
@@ -73,16 +73,32 @@ void test_mux_tick() {
 void test_mux_outqueue() {
 
   wp_mux *m = wpprotocol_mux_create(TESTPORT,AF_INET,test_mux_cb);
+  Wpmessage *message;
+  jnx_char *data = malloc(strlen("Hello"));
+  bzero(data,6);
+  memcpy(data,"Hello",6);
+  wp_generation_state w = wpprotocol_generate_message(&message,"001","002",
+      data,6,SELECTED_ACTION__CREATE_SESSION);
 
-  Wpmessage *om = generate_message();
-  jnx_stack_push(m->out_queue,om);
-  JNXCHECK(m);
+  JNXCHECK(message);
+  JNXLOG(LDEBUG,"generated message: length of value: %d", message->action->contextdata->rawdata.len);
+  JNXLOG(LDEBUG,"generated message: %s",message->action->contextdata->rawdata.data); 
+  free(data);
+
+  jnx_stack_push(m->out_queue,message);
+  
   JNXLOG(LDEBUG,"Ticking..."); 
-  wpprotocol_mux_tick(m); 
-  om = NULL;
-  wpprotocol_mux_pop(m,&om);
-  wpmessage__free_unpacked(om,NULL);
+  Wpmessage *o;
+  JNXCHECK(m->out_queue->count == 1); 
+  wpprotocol_mux_pop(m,&o);
   JNXCHECK(m->out_queue->count == 0); 
+
+  JNXCHECK(o->action->contextdata->has_rawdata);
+  printf("lenth of value: %d\n", o->action->contextdata->rawdata.len);
+  printf("%s\n",o->action->contextdata->rawdata.data); 
+  
+  JNXCHECK(o);
+  //wpmessage__free_unpacked(o,NULL);
   JNXCHECK(m->in_queue->count == 0); 
   wpprotocol_mux_destroy(&m);
 }
@@ -91,7 +107,7 @@ void test_inqueue() {
   JNXCHECK(m);
 
   Wpmessage *d = generate_message();
-  wpprotocol_mux_push(m,d);
+  JNXCHECK(E_WMS_OKAY == wpprotocol_mux_push(m,d));
   wpmessage__free_unpacked(d,NULL);
   JNXLOG(LDEBUG,"deleted reference to local message pointer");
   JNXLOG(LDEBUG,"Ticking...");
@@ -101,7 +117,6 @@ void test_inqueue() {
   wpprotocol_mux_destroy(&m);
 
 }
-
 void worker(void *args) {
   wp_mux *m = args;
   jnx_socket *t = jnx_socket_tcp_create(AF_INET);
@@ -136,10 +151,8 @@ void test_typical_use() {
   }
 
   JNXCHECK(strcmp(contextdata->rawdata.data,"Hello") == 0);
-
   JNXCHECK(output);  
   wpprotocol_mux_destroy(&m);
-  wpmessage__free_unpacked(outmessage,NULL);
 }
 int main(int argc, char **argv) {
   JNXLOG(LDEBUG,"text_mux_create");
