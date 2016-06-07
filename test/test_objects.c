@@ -2,7 +2,7 @@
  *     File Name           :     test/test_objects.c
  *     Created By          :     anon
  *     Creation Date       :     [2015-12-17 13:15]
- *     Last Modified       :     [2016-06-06 16:08]
+ *     Last Modified       :     [2016-06-07 10:30]
  *     Description         :      
  **********************************************************************************/
 #include "wpprotocol.h"
@@ -57,7 +57,7 @@ void test_message_copy() {
 
   Wpmessage *copied;
 
-  wpprotocol_deep_copy_message(message,&copied);
+  wpprotocol_copy_message(message,&copied);
 
   JNXCHECK(strcmp(message->action->contextdata->rawdata.data, copied->action->contextdata->rawdata.data) == 0);
 

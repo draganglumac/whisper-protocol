@@ -2,7 +2,7 @@
  *     File Name           :     /home/jonesax/Work/whisper-protocol/src/protocol/wpmux.c
  *     Created By          :     jonesax
  *     Creation Date       :     [2016-06-01 17:45]
- *     Last Modified       :     [2016-06-06 16:43]
+ *     Last Modified       :     [2016-06-07 10:30]
  *     Description         :      
  **********************************************************************************/
 
@@ -37,13 +37,11 @@ void wp_protocol_mux_message_processor(const jnx_uint8 *payload,
 void wpprotocol_mux_tick(wp_mux *mux) {
   jnx_socket_tcp_listener_tick(mux->listener,wp_protocol_mux_message_processor,
       mux);
-  if(!jnx_stack_is_empty(mux->in_queue)) {
-    Wpmessage *msg = jnx_stack_pop(mux->in_queue);
-    //emit one message
-    if(mux->emit_hook) {
+  if(mux->emit_hook) {
+    if(!jnx_stack_is_empty(mux->in_queue)) {
+      Wpmessage *msg = jnx_stack_pop(mux->in_queue);
+      //emit one message
       mux->emit_hook(msg);
-    }else {
-      JNXLOG(LERROR,"Unable to emit!");
     } 
   } 
   JNXLOG(LDEBUG,"Tick"); 
@@ -76,7 +74,7 @@ wp_mux_state wpprotocol_mux_push(wp_mux *mux,Wpmessage *inmsg) {
   }
 
   Wpmessage *deepcopy = NULL;
-  wpprotocol_deep_copy_message(inmsg,&deepcopy);
+  wpprotocol_copy_message(inmsg,&deepcopy);
   if(!deepcopy) {
     JNXLOG(LERROR,"Copy message failed!");
     return E_WMS_FAIL;

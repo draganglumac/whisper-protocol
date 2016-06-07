@@ -2,7 +2,7 @@
  *     File Name           :     /home/anon/Code/whisper-protocol/src/protocol/wpprotocol.c
  *     Created By          :     anon
  *     Creation Date       :     [2015-12-10 14:38]
- *     Last Modified       :     [2016-06-06 16:26]
+ *     Last Modified       :     [2016-06-07 10:29]
  *     Description         :      
  **********************************************************************************/
 
@@ -65,7 +65,7 @@ wp_generation_state wpprotocol_generate_message(Wpmessage **omessage,
   return E_WGS_OKAY;
 }
 
-wp_generation_state wpprotocol_deep_copy_message(Wpmessage *inmsg, Wpmessage **outmsg) {
+wp_generation_state wpprotocol_copy_message(Wpmessage *inmsg, Wpmessage **outmsg) {
   if(!inmsg) {
     return E_WGS_FAIL;
   }
