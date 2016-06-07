@@ -2,7 +2,7 @@
  *     File Name           :     /home/anon/Code/whisper-protocol/src/protocol/wpprotocol.c
  *     Created By          :     anon
  *     Creation Date       :     [2015-12-10 14:38]
- *     Last Modified       :     [2016-06-07 10:41]
+ *     Last Modified       :     [2016-06-07 15:09]
  *     Description         :      
  **********************************************************************************/
 
@@ -42,14 +42,17 @@ wp_generation_state wpprotocol_generate_message(Wpmessage **omessage,
   jnx_guid_to_string(&g, &idstr);
   int l = strlen(idstr);
   m.id = malloc(l + 1);
+  bzero(m.id,l+1);
   memcpy(m.id,idstr,l);
   //sender 
   l = strlen(sender);
   m.sender = malloc(l + 1);
+  bzero(m.sender,l+1);
   memcpy(m.sender,sender,l);
   //recipient
   len = strlen(recipient);
   m.recipient = malloc(l + 1);
+  bzero(m.recipient, l+1);
   memcpy(m.recipient,recipient,l);
 
   free(idstr);
