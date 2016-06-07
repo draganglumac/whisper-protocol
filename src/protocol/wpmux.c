@@ -2,7 +2,7 @@
  *     File Name           :     /home/jonesax/Work/whisper-protocol/src/protocol/wpmux.c
  *     Created By          :     jonesax
  *     Creation Date       :     [2016-06-01 17:45]
- *     Last Modified       :     [2016-06-07 10:37]
+ *     Last Modified       :     [2016-06-07 10:45]
  *     Description         :      
  **********************************************************************************/
 
@@ -12,13 +12,15 @@
 #include <stdlib.h>
 
 wp_mux *wpprotocol_mux_create(jnx_char *port, jnx_uint8 family,
-    wpprotocol_emit_message_hook hook) {
+    wpprotocol_emit_message_hook hook, void *optional_emit_args) {
   wp_mux *mux = malloc(sizeof(wp_mux));
   mux->listener = jnx_socket_tcp_listener_create(port,family,100);
   mux->out_queue = jnx_stack_create();
   mux->in_queue = jnx_stack_create();
   if(hook)
     mux->emit_hook = hook;
+  if(optional_emit_args)
+    mux->optional_emit_args = optional_emit_args;
   JNXCHECK(mux);
   JNXCHECK(hook);
   return mux;
@@ -41,7 +43,7 @@ void wpprotocol_mux_tick(wp_mux *mux) {
     if(!jnx_stack_is_empty(mux->in_queue)) {
       Wpmessage *msg = jnx_stack_pop(mux->in_queue);
       //emit one message
-      mux->emit_hook(msg);
+      mux->emit_hook(msg,mux->optional_emit_args);
     } 
   } 
   JNXLOG(LDEBUG,"Tick"); 

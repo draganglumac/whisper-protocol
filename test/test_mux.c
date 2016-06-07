@@ -2,7 +2,7 @@
  *     File Name           :     test/test_objects.c
  *     Created By          :     anon
  *     Creation Date       :     [2015-12-17 13:15]
- *     Last Modified       :     [2016-06-06 16:52]
+ *     Last Modified       :     [2016-06-07 10:47]
  *     Description         :      
  **********************************************************************************/
 #include "wpprotocol.h"
@@ -57,12 +57,12 @@ void test_mux_cb(Wpmessage *message) {
 }
 void test_mux_create() {
 
-  wp_mux *m = wpprotocol_mux_create(TESTPORT,AF_INET,test_mux_cb);
+  wp_mux *m = wpprotocol_mux_create(TESTPORT,AF_INET,test_mux_cb,NULL);
   JNXCHECK(m);
   wpprotocol_mux_destroy(&m);
 }
 void test_mux_tick() {
-  wp_mux *m = wpprotocol_mux_create(TESTPORT,AF_INET,test_mux_cb);
+  wp_mux *m = wpprotocol_mux_create(TESTPORT,AF_INET,test_mux_cb,NULL);
   JNXCHECK(m);
   JNXLOG(LDEBUG,"Ticking..."); 
   wpprotocol_mux_tick(m); 
@@ -72,7 +72,7 @@ void test_mux_tick() {
 }
 void test_mux_outqueue() {
 
-  wp_mux *m = wpprotocol_mux_create(TESTPORT,AF_INET,test_mux_cb);
+  wp_mux *m = wpprotocol_mux_create(TESTPORT,AF_INET,test_mux_cb,NULL);
   Wpmessage *message;
   jnx_char *data = malloc(strlen("Hello"));
   bzero(data,6);
@@ -103,7 +103,7 @@ void test_mux_outqueue() {
   wpprotocol_mux_destroy(&m);
 }
 void test_inqueue() {
-  wp_mux *m = wpprotocol_mux_create(TESTPORT,AF_INET,test_mux_cb);
+  wp_mux *m = wpprotocol_mux_create(TESTPORT,AF_INET,test_mux_cb,NULL);
   JNXCHECK(m);
 
   Wpmessage *d = generate_message();
@@ -129,7 +129,8 @@ void worker(void *args) {
 void test_typical_use() {
 
   has_emitted = 0;
-  wp_mux *m = wpprotocol_mux_create(TESTPORT,AF_INET,test_mux_cb);
+  wp_mux *m = wpprotocol_mux_create(TESTPORT,AF_INET,test_mux_cb,NULL);
+  JNXCHECK(m);
 
   worker(m);
   wpprotocol_mux_tick(m); 
