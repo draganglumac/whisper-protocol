@@ -2,7 +2,7 @@
  *     File Name           :     /home/jonesax/Work/whisper-protocol/src/protocol/wpmux.c
  *     Created By          :     jonesax
  *     Creation Date       :     [2016-06-01 17:45]
- *     Last Modified       :     [2016-06-07 10:34]
+ *     Last Modified       :     [2016-06-07 10:37]
  *     Description         :      
  **********************************************************************************/
 
@@ -20,7 +20,7 @@ wp_mux *wpprotocol_mux_create(jnx_char *port, jnx_uint8 family,
   if(hook)
     mux->emit_hook = hook;
   JNXCHECK(mux);
-
+  JNXCHECK(hook);
   return mux;
 }
 void wp_protocol_mux_message_processor(const jnx_uint8 *payload,

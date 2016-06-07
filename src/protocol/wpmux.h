@@ -2,7 +2,7 @@
 *     File Name           :     src/protocol/wpmux.h
 *     Created By          :     jonesax
 *     Creation Date       :     [2016-06-01 17:40]
-*     Last Modified       :     [2016-06-07 10:31]
+*     Last Modified       :     [2016-06-07 10:37]
 *     Description         :      
 **********************************************************************************/
 #ifndef __WPMUX_H__
@@ -32,9 +32,6 @@ typedef struct wp_mux {
   wpprotocol_emit_message_hook emit_hook;
 }wp_mux;
 
-
-//if emit hook is set, it means wpprotocol_tick will pop one message per tick to
-//the emithook 
 wp_mux *wpprotocol_mux_create(jnx_char *port, jnx_uint8 family,
     wpprotocol_emit_message_hook hook);
 
