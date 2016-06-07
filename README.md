@@ -13,30 +13,37 @@ Example of messaging below:
 wp_mux *m = NULL;
 
 
-void some_callback_for_user_on_message(Wpmessage *message) {
+void my_custom_emitter(Wpmessage *message,void *custom_emitter_args) {
 
-  Wpaction *a = message->action;
-  Wpcontextdata *contextdata = a->contextdata;
+ jnx_size osize;
+ jnx_char *obuffer;
+ wp_generation_state e = wpprotocol_generate_message_string(message,
+     &obuffer,&osize); 
 
-  if(contextdata->has_rawdata) {
-    printf("lenth of value: %d\n", contextdata->rawdata.len);
-    printf("content: %s\n", contextdata->rawdata.data);
+  //send the string buffer of data via some means...
+  send_data("192.168.1.68","8080",obuffer,osize);
 
-    //maybe send a reply?
-    if(m) {
-      Wpmessage *d = generate_message();
-      //Schedules message to be sent on next network tick
-      wpprotocol_mux_push(m,d);
-    }
-  }
 }
 
 
 void example() {
-  m = wpprotocol_mux_create(TESTPORT,AF_INET,some_callback_for_user_on_message);
+  m = wpprotocol_mux_create(TESTPORT,AF_INET,my_custom_emitter,NULL);
+
+  //generate some message and push it into the queues
+  Wpmessage *outmessage = generated_message();
+
+  wpprotocol_mux_push(m,outmessage);
 
   while(;;) { 
     wpprotocol_mux_tick(m);
+  
+    //read anything on the incoming queue
+    Wpmessage *message;
+    wpprotocol_mux_pop(m,&message);
+    if(message) {
+    
+    }
+  
     sleep(500);
   }
 
