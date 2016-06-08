@@ -21,12 +21,12 @@ include_directories(${PROJECT_INC_DIR}src/protocol)
 file(MAKE_DIRECTORY whisper_protocol_headers)
 file(COPY ${HEADERS} DESTINATION whisper_protocol_headers)
 
-add_library(whisper_protocol STATIC ${SOURCE})
-add_library(whisper_protocols SHARED ${SOURCE})
+add_library(whisper-protocol STATIC ${SOURCE})
+add_library(whisper-protocols SHARED ${SOURCE})
 
-target_link_libraries(whisper_protocol ${LINKER_LIBRARIES})
-target_link_libraries(whisper_protocols ${LINKER_LIBRARIES})
+target_link_libraries(whisper-protocol ${LINKER_LIBRARIES})
+target_link_libraries(whisper-protocols ${LINKER_LIBRARIES})
 
-install(TARGETS whisper_protocol DESTINATION ${INSTALL_PREFIX}/lib)
-install(TARGETS whisper_protocols DESTINATION ${INSTALL_PREFIX}/lib)
+install(TARGETS whisper-protocol DESTINATION ${INSTALL_PREFIX}/lib)
+install(TARGETS whisper-protocols DESTINATION ${INSTALL_PREFIX}/lib)
 install(DIRECTORY whisper_protocol_headers DESTINATION ${INSTALL_PREFIX}/include)
