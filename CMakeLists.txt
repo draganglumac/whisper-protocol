@@ -10,6 +10,12 @@ add_subdirectory(src/protocol)
 include_directories(${PROJECT_INC_DIR}src/obj)
 include_directories(${PROJECT_INC_DIR}src/protocol)
 
+execute_process(COMMAND git submodule init)
+execute_process(COMMAND git submodule update)
+execute_process(COMMAND cmake . -DIGNORE_VERSION=1 WORKING_DIRECTORY jnxlibc)
+execute_process(COMMAND make . WORKING_DIRECTORY jnxlibc)
+execute_process(COMMAND sudo make install . WORKING_DIRECTORY jnxlibc)
+
 file(MAKE_DIRECTORY whisper_protocol_headers)
 file(COPY ${HEADERS} DESTINATION whisper_protocol_headers)
 
