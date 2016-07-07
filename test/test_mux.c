@@ -2,7 +2,7 @@
  *     File Name           :     test/test_objects.c
  *     Created By          :     anon
  *     Creation Date       :     [2015-12-17 13:15]
- *     Last Modified       :     [2016-06-07 11:23]
+ *     Last Modified       :     [2016-06-09 13:41]
  *     Description         :      
  **********************************************************************************/
 #include "wpprotocol.h"
@@ -19,7 +19,7 @@ jnx_char *generate_message_str() {
   jnx_char *data = malloc(strlen("Hello"));
   bzero(data,6);
   memcpy(data,"Hello",6);
-  wp_generation_state w = wpprotocol_generate_message(&message,"001","002",
+  wp_generation_state w = wpprotocol_generate_message(&message,"00000000000001","001","002",
       data,6,SELECTED_ACTION__CREATE_SESSION);
 
   JNXCHECK(w == E_WGS_OKAY);
@@ -35,7 +35,7 @@ Wpmessage *generate_message() {
   jnx_char *data = malloc(strlen("Hello"));
   bzero(data,6);
   memcpy(data,"Hello",6);
-  wp_generation_state w = wpprotocol_generate_message(&message,"001","002",
+  wp_generation_state w = wpprotocol_generate_message(&message,"00000000000001","001","002",
       data,6,SELECTED_ACTION__CREATE_SESSION);
 
   Wpaction *a = message->action;
@@ -77,7 +77,7 @@ void test_mux_outqueue() {
   jnx_char *data = malloc(strlen("Hello"));
   bzero(data,6);
   memcpy(data,"Hello",6);
-  wp_generation_state w = wpprotocol_generate_message(&message,"001","002",
+  wp_generation_state w = wpprotocol_generate_message(&message,"00000000000001","001","002",
       data,6,SELECTED_ACTION__CREATE_SESSION);
 
   JNXCHECK(message);

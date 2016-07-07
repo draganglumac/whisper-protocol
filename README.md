@@ -1,5 +1,7 @@
 # whisper-protocol
 
+`Depends on jnxlibc`
+
 A self contained google protobuf protocol for whisper-core.
 Uses the principle of a mux to control push/pull from queues.
 

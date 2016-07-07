@@ -3,6 +3,7 @@ enum selectedAction {
   RESPONDING_CREATED_SESSION = 1; //Returns public key
   SHARING_SESSION_KEY = 2; // Shares symmetrical key
   COMPLETED_SESSION = 3; // Flag sets new mode
+  COMMUNICATING_SESSION = 4;
 }
 
 /* root container */

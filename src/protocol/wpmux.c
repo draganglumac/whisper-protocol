@@ -2,7 +2,7 @@
  *     File Name           :     /home/jonesax/Work/whisper-protocol/src/protocol/wpmux.c
  *     Created By          :     jonesax
  *     Creation Date       :     [2016-06-01 17:45]
- *     Last Modified       :     [2016-06-07 10:45]
+ *     Last Modified       :     [2016-06-09 21:56]
  *     Description         :      
  **********************************************************************************/
 
@@ -46,7 +46,6 @@ void wpprotocol_mux_tick(wp_mux *mux) {
       mux->emit_hook(msg,mux->optional_emit_args);
     } 
   } 
-  JNXLOG(LDEBUG,"Tick"); 
 }
 void wpprotocol_mux_destroy(wp_mux **mux) {
   JNXCHECK(*mux);
@@ -81,7 +80,10 @@ wp_mux_state wpprotocol_mux_push(wp_mux *mux,Wpmessage *inmsg) {
     JNXLOG(LERROR,"Copy message failed!");
     return E_WMS_FAIL;
   }
-
+  JNXLOG(LDEBUG,"====Mux new message pushed====");
+  JNXLOG(LDEBUG,"Sender: %s",deepcopy->sender);
+  JNXLOG(LDEBUG,"Recipient: %s", deepcopy->recipient);
+  JNXLOG(LDEBUG,"===============================");
   jnx_stack_push(mux->in_queue, deepcopy); 
   return E_WMS_OKAY;
 }
@@ -90,12 +92,10 @@ wp_mux_state wpprotocol_mux_pop(wp_mux *mux, Wpmessage **omsg) {
   if(!jnx_stack_is_empty(mux->out_queue)) {
     Wpmessage *msg = jnx_stack_pop(mux->out_queue);
     if(!msg) {
-      JNXLOG(LWARN,"No message to pop");
       return E_WMS_FAIL;
     }
     *omsg = msg;
     return E_WMS_OKAY;
   }
-  JNXLOG(LWARN,"Message out queue empty");
   return E_WMS_OKAY_EMPTY;
 }

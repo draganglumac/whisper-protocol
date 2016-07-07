@@ -2,7 +2,7 @@
  *     File Name           :     test/test_objects.c
  *     Created By          :     anon
  *     Creation Date       :     [2015-12-17 13:15]
- *     Last Modified       :     [2016-06-07 10:30]
+ *     Last Modified       :     [2016-06-09 13:40]
  *     Description         :      
  **********************************************************************************/
 #include "wpprotocol.h"
@@ -17,7 +17,8 @@ void test_message_create() {
   jnx_char *data = malloc(strlen("hello"));
   bzero(data,6);
   memcpy(data,"Hello",6);
-  wp_generation_state w = wpprotocol_generate_message(&message,"001","002",
+  wp_generation_state w = wpprotocol_generate_message(&message,"00000000000001",
+      "001","002",
       data,6,SELECTED_ACTION__CREATE_SESSION);
 
   free(data);
@@ -48,7 +49,8 @@ void test_message_copy() {
   jnx_char *data = malloc(strlen("hello"));
   bzero(data,6);
   memcpy(data,"hello",6);
-  wp_generation_state w = wpprotocol_generate_message(&message,"001","002",
+  wp_generation_state w = wpprotocol_generate_message(&message,"00000000000002",
+      "001","002",
       data,6,SELECTED_ACTION__CREATE_SESSION);
 
   free(data);
