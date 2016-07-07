@@ -1,4 +1,4 @@
-# Install script for directory: /home/jonesax/Work/whisper-core/whisper-protocol/src/obj
+# Install script for directory: /home/jonesax/Work/whisper-protocol/src/obj
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
