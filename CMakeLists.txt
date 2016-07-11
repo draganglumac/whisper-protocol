@@ -28,13 +28,19 @@ file(COPY ${HEADERS} DESTINATION whisper_protocol_headers)
 
 add_definitions("-fPIC")
 
-add_library(whisper-protocol STATIC ${SOURCE})
-add_library(whisper-protocols SHARED ${SOURCE})
+add_library(jnxlibc SHARED IMPORTED)
+add_library(jnxlibcs STATIC IMPORTED)
+
+set_property(TARGET jnxlibc PROPERTY IMPORTED_LOCATION ${jnxlibc_INSTALL_DIR}/lib/libjnxc.so)
+set_property(TARGET jnxlibcs PROPERTY IMPORTED_LOCATION ${jnxlibc_INSTALL_DIR}/lib/libjnxcs.a)
+
+add_library(whisper-protocol SHARED ${SOURCE})
+add_library(whisper-protocols STATIC ${SOURCE})
 
 add_dependencies(whisper-protocol jnxlibc-project)
 
-target_link_libraries(whisper-protocol  ${LINKER_LIBRARIES} jnxc)
-target_link_libraries(whisper-protocols  ${LINKER_LIBRARIES} jnxcs)
+target_link_libraries(whisper-protocol  ${LINKER_LIBRARIES} jnxlibc)
+target_link_libraries(whisper-protocols  ${LINKER_LIBRARIES} jnxlibcs)
 
 install(TARGETS whisper-protocol DESTINATION ${CMAKE_INSTALL_PREFIX}/lib)
 install(TARGETS whisper-protocols DESTINATION ${CMAKE_INSTALL_PREFIX}/lib)
