@@ -12,7 +12,7 @@ include_directories(${PROJECT_INC_DIR}src/obj)
 include_directories(${PROJECT_INC_DIR}src/protocol)
 
 set(jnxlibc_PREFIX "${CMAKE_CURRENT_BINARY_DIR}/jnxlibc")
-set(jnxlibc_INSTALL_DIR "${CMAKE_CURRENT_BINARY_DIR}/jnxlibc_install_files")
+set(jnxlibc_INSTALL_DIR "/usr")
 set(jnxlibc_CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${jnxlibc_INSTALL_DIR} -DIGNORE_VERSION=1)
 
 ExternalProject_Add(jnxlibc-project
