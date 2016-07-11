@@ -12,7 +12,7 @@ include_directories(${PROJECT_INC_DIR}src/protocol)
 
 set(jnxlibc_PREFIX "${CMAKE_CURRENT_BINARY_DIR}/jnxlibc")
 set(jnxlibc_INSTALL_DIR ${CMAKE_INSTALL_PREFIX})
-set(jnxlibc_CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${jnxlibc_INSTALL_DIR} -DIGNORE_VERSION=1)
+set(jnxlibc_CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${jnxlibc_INSTALL_DIR})
 
 ExternalProject_Add(jnxlibc-project
   PREFIX ${jnxlibc_PREFIX}
@@ -20,7 +20,7 @@ ExternalProject_Add(jnxlibc-project
   INSTALL_DIR ${jnxlibc_INSTALL_DIR}
   CMAKE_ARGS ${jnxlibc_CMAKE_ARGS}
   BUILD_COMMAND make
-  INSTALL_COMMAND sudo make install
+  INSTALL_COMMAND make install
   )
 
 file(MAKE_DIRECTORY whisper_protocol_headers)
@@ -37,12 +37,14 @@ set_property(TARGET jnxlibcs PROPERTY IMPORTED_LOCATION ${jnxlibc_INSTALL_DIR}/l
 add_library(whisper-protocol SHARED ${SOURCE})
 add_library(whisper-protocols STATIC ${SOURCE})
 
-add_dependencies(whisper-protocol jnxlibc-project)
 
 target_link_libraries(whisper-protocol  ${LINKER_LIBRARIES} jnxlibc)
 target_link_libraries(whisper-protocols  ${LINKER_LIBRARIES} jnxlibcs)
 
-include_directories(${jnxlibc_INSTALL_DIR}/include/jnxc_headers)
+add_dependencies(whisper-protocol jnxlibc-project)
+add_dependencies(whisper-protocols jnxlibc-project)
+
+include_directories("${CMAKE_INSTALL_PREFIX}/include")
 
 install(TARGETS whisper-protocol DESTINATION ${CMAKE_INSTALL_PREFIX}/lib)
 install(TARGETS whisper-protocols DESTINATION ${CMAKE_INSTALL_PREFIX}/lib)
