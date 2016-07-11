@@ -18,7 +18,7 @@ set(jnxlibc_CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${jnxlibc_INSTALL_DIR} -DIGNORE_VE
 
 ExternalProject_Add(jnxlibc-project
   PREFIX ${jnxlibc_PREFIX}
-  GIT_REPOSITORY https://github.com/AlexsJones/jnxlibc.git
+  URL https://github.com/AlexsJones/jnxlibc/archive/v2.2.tar.gz
   INSTALL_DIR ${jnxlibc_INSTALL_DIR}
   CMAKE_ARGS ${jnxlibc_CMAKE_ARGS}
   BUILD_COMMAND make
