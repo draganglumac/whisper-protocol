@@ -42,6 +42,8 @@ add_dependencies(whisper-protocol jnxlibc-project)
 target_link_libraries(whisper-protocol  ${LINKER_LIBRARIES} jnxlibc)
 target_link_libraries(whisper-protocols  ${LINKER_LIBRARIES} jnxlibcs)
 
+include_directories(${jnxlibc_INSTALL_DIR}/include/jnxc_headers)
+
 install(TARGETS whisper-protocol DESTINATION ${CMAKE_INSTALL_PREFIX}/lib)
 install(TARGETS whisper-protocols DESTINATION ${CMAKE_INSTALL_PREFIX}/lib)
 install(DIRECTORY whisper_protocol_headers DESTINATION ${CMAKE_INSTALL_PREFIX}/include)
