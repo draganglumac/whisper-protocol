@@ -11,4 +11,3 @@ CMakeCache
 *.CMakeFiles
 CMakeCache.txt
 Makefile
-*.pb-c.*
