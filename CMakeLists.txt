@@ -31,7 +31,7 @@ add_definitions("-fPIC")
 add_library(whisper-protocol STATIC ${SOURCE})
 add_library(whisper-protocols SHARED ${SOURCE})
 
-include_directories(${install_dir}/include/jnxc_headers)
+add_dependencies(whisper-protocol jnxlibc-project)
 
 target_link_libraries(whisper-protocol  ${LINKER_LIBRARIES} jnxc)
 target_link_libraries(whisper-protocols  ${LINKER_LIBRARIES} jnxcs)
