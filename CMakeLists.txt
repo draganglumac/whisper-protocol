@@ -20,7 +20,7 @@ ExternalProject_Add(jnxlibc-project
   INSTALL_DIR ${jnxlibc_INSTALL_DIR}
   CMAKE_ARGS ${jnxlibc_CMAKE_ARGS}
   BUILD_COMMAND make
-  INSTALL_COMMAND make install
+  INSTALL_COMMAND sudo make install
   )
 
 file(MAKE_DIRECTORY whisper_protocol_headers)
