@@ -48,4 +48,4 @@ include_directories("${CMAKE_INSTALL_PREFIX}/include")
 
 install(TARGETS whisper-protocol DESTINATION ${CMAKE_INSTALL_PREFIX}/lib)
 install(TARGETS whisper-protocols DESTINATION ${CMAKE_INSTALL_PREFIX}/lib)
-install(DIRECTORY whisper_protocol_headers DESTINATION ${CMAKE_INSTALL_PREFIX}/include)
+install(DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/whisper_protocol_headers" DESTINATION "${CMAKE_INSTALL_PREFIX}/include")
