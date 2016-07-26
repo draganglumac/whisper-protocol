@@ -31,15 +31,18 @@ add_definitions("-fPIC")
 add_library(jnxlibc SHARED IMPORTED)
 add_library(jnxlibcs STATIC IMPORTED)
 
-set_property(TARGET jnxlibc PROPERTY IMPORTED_LOCATION ${jnxlibc_INSTALL_DIR}/lib/libjnxc.so)
-set_property(TARGET jnxlibcs PROPERTY IMPORTED_LOCATION ${jnxlibc_INSTALL_DIR}/lib/libjnxcs.a)
+if(APPLE)
+  set_property(TARGET jnxlibc PROPERTY IMPORTED_LOCATION ${jnxlibc_INSTALL_DIR}/lib/libjnxc.dylib)
+else()
+  set_property(TARGET jnxlibc PROPERTY IMPORTED_LOCATION ${jnxlibc_INSTALL_DIR}/lib/libjnxc.so)
+endif()
+set_property(TARGET jnxlibcs PROPERTY IMPORTED_LOCATION ${jnxlibc_INSTALL_DIR}/lib/libjnxc.a)
 
 add_library(whisper-protocol SHARED ${SOURCE})
 add_library(whisper-protocols STATIC ${SOURCE})
 
-
-target_link_libraries(whisper-protocol  ${LINKER_LIBRARIES} jnxlibc)
-target_link_libraries(whisper-protocols  ${LINKER_LIBRARIES} jnxlibcs)
+target_link_libraries(whisper-protocol  ${LINKER_LIBRARIES} jnxlibc protobuf-c)
+target_link_libraries(whisper-protocols  ${LINKER_LIBRARIES} jnxlibcs protobuf-c)
 
 add_dependencies(whisper-protocol jnxlibc-project)
 add_dependencies(whisper-protocols jnxlibc-project)
